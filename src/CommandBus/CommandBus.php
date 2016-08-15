@@ -9,6 +9,9 @@ use KP\CommandBus\Exception\GenericCommandHandlerException;
 use KP\CommandBus\Exception\NotRegisteredCommandHandlerException;
 use KP\CommandBus\Response\Response;
 use KP\CommandBus\Response\ResponseInterface;
+use ProxyManager\Proxy\LazyLoadingInterface;
+use ProxyManager\Proxy\ProxyInterface;
+use ProxyManager\Proxy\VirtualProxyInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -45,7 +48,17 @@ class CommandBus
     {
         foreach ($commandHandlers as $commandHandler) {
             if ($commandHandler instanceof CommandHandlerInterface) {
-                $this->commandHandlers[get_class($commandHandler)] = $commandHandler;
+                // support for @url http://ocramius.github.io/ProxyManager/
+                if ($commandHandler instanceof ProxyInterface) {
+                    $ref = new \ReflectionClass($commandHandler);
+
+                    $commandHandlerClassName = $ref->getParentClass()->getName();
+                } else {
+                    $commandHandlerClassName = get_class($commandHandler);
+                }
+
+                $this->commandHandlers[$commandHandlerClassName] = $commandHandler;
+
             } else {
                 throw new ClassDoesNotImplementCommandHandlerInterfaceException(
                     get_class($commandHandler)
