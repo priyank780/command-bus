@@ -4,7 +4,7 @@ namespace KP\CommandBus\Event;
 
 use KP\CommandBus\CommandInterface;
 use KP\CommandBus\Response\ResponseInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @author Konrad Podgórski <konrad.podgorski@gmail.com>
