@@ -9,9 +9,7 @@ use KP\CommandBus\Exception\GenericCommandHandlerException;
 use KP\CommandBus\Exception\NotRegisteredCommandHandlerException;
 use KP\CommandBus\Response\Response;
 use KP\CommandBus\Response\ResponseInterface;
-use ProxyManager\Proxy\LazyLoadingInterface;
 use ProxyManager\Proxy\ProxyInterface;
-use ProxyManager\Proxy\VirtualProxyInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -76,7 +74,7 @@ class CommandBus
      */
     public function execute(CommandInterface $command)
     {
-        $this->eventDispatcher->dispatch(Events::PRE_COMMAND, new PreCommandEvent($command));
+        $this->eventDispatcher->dispatch(new PreCommandEvent($command), Events::PRE_COMMAND);
 
         try {
             $commandHandlerClass = $command->getCommandHandlerClass();
@@ -95,7 +93,7 @@ class CommandBus
             $response = new Response($results);
         }
 
-        $this->eventDispatcher->dispatch(Events::POST_COMMAND, new PostCommandEvent($command, $response));
+        $this->eventDispatcher->dispatch(new PostCommandEvent($command, $response), Events::POST_COMMAND);
 
         return $response;
     }
