@@ -3,8 +3,7 @@
 namespace KP\CommandBus\Event;
 
 use KP\CommandBus\CommandInterface;
-use Symfony\Component\EventDispatcher\Event;
-
+use Symfony\Contracts\EventDispatcher\Event;
 /**
  * @author Konrad Podgórski <konrad.podgorski@gmail.com>
  */
